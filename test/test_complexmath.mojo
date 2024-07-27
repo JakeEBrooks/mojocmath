@@ -28,11 +28,11 @@ fn test_isnegative() raises:
     assert_equal(isnegative(SIMD[DType.float32, 2](-0., 0.)), SIMD[DType.bool, 2](True, False))
 
 fn test_csqrt() raises:
-    assert_true(csqrt(ComplexFloat32(-4., -0.)) == ComplexFloat32(+0., -2.))
-    assert_true(csqrt(ComplexFloat32(-4., +0.)) == ComplexFloat32(+0., +2.))
-    assert_true(csqrt(ComplexFloat32(+4., +0.)) == ComplexFloat32(+2., +0.))
-    assert_true((csqrt(ComplexSIMD(SIMD[DType.float32, 2](-4., -4.), SIMD[DType.float32, 2](-0., +0.))) == 
-                       ComplexSIMD(SIMD[DType.float32, 2](+0., +0.), SIMD[DType.float32, 2](-2., +2.))).reduce_and())
+    assert_true(csqrt(ComplexFloat32(-4., -0.)) == ComplexFloat32(0., -2.))
+    assert_true(csqrt(ComplexFloat32(-4., 0.)) == ComplexFloat32(0., 2.))
+    assert_true(csqrt(ComplexFloat32(4., 0.)) == ComplexFloat32(2., 0.))
+    assert_true((csqrt(ComplexSIMD(SIMD[DType.float32, 2](-4., -4.), SIMD[DType.float32, 2](-0., 0.))) == 
+                       ComplexSIMD(SIMD[DType.float32, 2](0., 0.), SIMD[DType.float32, 2](-2., 2.))).reduce_and())
 
 fn test_cis() raises:
     complex_assert_almost_equal(cis[DType.float32, 1](PI), ComplexFloat32(-1, 0), atol=1e-05)

@@ -31,7 +31,7 @@ alias ComplexFloat64 = ComplexScalar[DType.float64]
 """Represents a complex 64-bit floating point value."""
 
 @register_passable("trivial")
-struct ComplexSIMD[type: DType, width: Int](Sized, CollectionElement, Stringable, Absable, Powable):
+struct ComplexSIMD[type: DType, width: Int](Sized, CollectionElement, Stringable, Absable, Powable, Formattable):
     """
     Represents complex values as a pair of `SIMD` vectors.
 
@@ -380,14 +380,21 @@ struct ComplexSIMD[type: DType, width: Int](Sized, CollectionElement, Stringable
             A `ComplexSIMD` representing `- self`.
         """
         return Self(-self.real, -self.imag)
-
+    
     fn __str__(self) -> String:
-        """Get a string representation of `self`.
-        
-        Returns:
-            A string representation of `self`.
         """
-        return str(self.real)+" "+str(self.imag)+"i"
+        Get a string representation of `self`.
+
+        Returns:
+            A `String` representing `self`.
+        """
+        return String.format_sequence(self)
+
+    fn format_to(self, inout writer: Formatter):
+        """
+        Create a string representation of `self`.
+        """
+        return writer.write(self.real, " ", self.imag, "i")
     
     fn __len__(self) -> Int:
         """Get the `SIMD` width of `self`.
@@ -443,34 +450,6 @@ struct ComplexSIMD[type: DType, width: Int](Sized, CollectionElement, Stringable
             In other words, the values of `self.real[i] != other.real[i]` and `self.imag[i] != other.imag[i]` are both `True`.
         """
         return (self.real != other.real) | (self.imag != other.imag)
-    
-    @staticmethod
-    fn splat(val: Scalar[type]) -> Self:
-        """Create a new `ComplexSIMD` by splatting `val` across the real component.
-
-        Args:
-            val: The input scalar value.
-
-        Returns:
-            A new `ComplexSIMD` whose real elements are the same as the input value. The imaginary elements
-            are all set to zero.
-        """
-        return Self{real: SIMD[type, width].splat(val),
-                    imag: SIMD[type, width]()}
-
-    @staticmethod
-    fn splat(real: Scalar[type], imag: Scalar[type]) -> Self:
-        """Create a new `ComplexSIMD` by splatting `real` across the real component and `imag` across the imaginary component.
-
-        Args:
-            real: The input scalar value for the real component.
-            imag: The input scalar value for the imaginary component.
-
-        Returns:
-            A new `ComplexSIMD` whose real elements are all equal to `real` and whose imaginary elements are all equal to `imag`.
-        """
-        return Self{real: SIMD[type, width].splat(real),
-                    imag: SIMD[type, width].splat(imag)}
   
     fn conjugate(self) -> Self:
         """Negates the imaginary component of `self` to produce the complex conjugate.

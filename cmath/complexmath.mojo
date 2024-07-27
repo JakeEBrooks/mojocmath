@@ -168,7 +168,7 @@ fn clog10[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[t
     # Given an arbitrary base b:
     # log_b(z) = log(z)/log(b)
 
-    return clog(z)/log[type, width](10)
+    return clog(z)/log(SIMD[type, width](10))
 
 fn clog2[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[type, width]:
     """Performs an elementwise base-2 logarithm operation on the complex values within `z`.
@@ -187,7 +187,7 @@ fn clog2[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[ty
     # Given an arbitrary base b:
     # log_b(z) = log(z)/log(b)
 
-    return clog(z)/log[type, width](2)
+    return clog(z)/log(SIMD[type, width](2))
 
 fn clogb[type: DType, width: Int](z: ComplexSIMD[type, width], b: SIMD[type, width]) -> ComplexSIMD[type, width]:
     """Performs an elementwise logarithm operation on the complex values within `z` with specified bases `b`.
@@ -247,7 +247,7 @@ fn cexp2[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[ty
     constrained[type.is_floating_point(), "The input datatype must be a floating-point datatype."]()
     # If w = 2^z, then log(w) = z*log(2), so w = e^(z*log(2))
 
-    return cexp(z*log[type, width](2))
+    return cexp(z*log(SIMD[type, width](2)))
 
 fn cpowc[type: DType, width: Int](z: ComplexSIMD[type, width], n: ComplexSIMD[type, width]) -> ComplexSIMD[type, width]:
     """Performs an elementwise exponential operation, `z^n`, where the base `z` and the exponent
@@ -522,7 +522,7 @@ fn casin[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[ty
     constrained[type.is_floating_point(), "The input datatype must be a floating-point datatype."]()
     # asin(z) = -i*ln(sqrt(1 - z^2) + iz)
 
-    var i = ComplexSIMD[type, width].splat(0, 1)
+    var i = ComplexSIMD[type, width](SIMD[type, width](0), SIMD[type, width](1))
 
     return -i*clog(csqrt(1 - csquare(z)) + i*z)
 
@@ -542,7 +542,7 @@ fn cacos[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[ty
     constrained[type.is_floating_point(), "The input datatype must be a floating-point datatype."]()
     # acos(z) = -i*ln(i*sqrt(1 - z^2) + z)
 
-    var i = ComplexSIMD[type, width].splat(0, 1)
+    var i = ComplexSIMD[type, width](SIMD[type, width](0), SIMD[type, width](1))
 
     return -i*clog(i*csqrt(1 - csquare(z)) + z)
 
@@ -562,8 +562,8 @@ fn catan[type: DType, width: Int](z: ComplexSIMD[type, width]) -> ComplexSIMD[ty
     constrained[type.is_floating_point(), "The input datatype must be a floating-point datatype."]()
     # atan(z) = -(i/2)*ln((i - z)/(i + z))
 
-    var i = ComplexSIMD[type, width].splat(0, 1)
-    var i2 = ComplexSIMD[type, width].splat(0, 0.5)
+    var i = ComplexSIMD[type, width](SIMD[type, width](0), SIMD[type, width](1))
+    var i2 = ComplexSIMD[type, width](SIMD[type, width](0), SIMD[type, width](0.5))
 
     return -i2*clog((i - z)/(i + z))
 
